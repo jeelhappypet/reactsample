@@ -61,27 +61,20 @@ function AllUser() {
             <div>Last Name</div>
             <div>Age</div>
             <div>Email</div>
-            <div>Action</div>
           </div>
           {data.users.map((user) => (
             <div
               key={user.id}
+              onClick={() => navigate(`/users/${user.id}`)}
               className="grid grid-cols-6 gap-4 p-4 border-b border-gray-200 hover:bg-gray-50 place-items-center cursor-pointer"
             >
-              <div key={user.id} onClick={() => navigate(`/users/${user.id}`)}>{user.id}</div>
-              <div key={user.id} onClick={() => navigate(`/users/${user.id}`)}>{user.firstName}</div>
-              <div key={user.id} onClick={() => navigate(`/users/${user.id}`)}>{user.lastName}</div>
-              <div key={user.id} onClick={() => navigate(`/users/${user.id}`)}>{user.age}</div>
-              <div key={user.id} onClick={() => navigate(`/users/${user.id}`)}>{user.email}</div>
+              <div>{user.id}</div>
+              <div>{user.firstName}</div>
+              <div>{user.lastName}</div>
+              <div>{user.age}</div>
+              <div>{user.email}</div>
 
-              <div>
-                <button className="bg-red-500 text-white px-4 py-2 rounded mr-2 hover:bg-red-600" >
-                  Delete
-                </button>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                  Update
-                </button>
-              </div>
+            
             </div>
           ))}
         </div>

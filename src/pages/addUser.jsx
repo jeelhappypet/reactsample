@@ -10,6 +10,7 @@ const AddUserForm = () => {
     age: "",
     gender: "",
     phone: "",
+    role: "",
   });
   const [message, setMessage] = useState("");
   const [error, setError] = useState(null);
@@ -22,19 +23,16 @@ const AddUserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "https://dummyjson.com/users/add",
-        formData,
-      );
-      console.log("User added successfully:", response.data);
+      const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+      const newUser = { id: Date.now(), ...formData };
+      existingUsers.push(newUser);
+      localStorage.setItem('users', JSON.stringify(existingUsers));
+      console.log("User added successfully:", newUser);
       setMessage("User added successfully!");
       setError(null);
-      setFormData({ firstName: "", lastName: "", email: "" ,age:"" , gender:"" ,phone:""});
+      setFormData({ firstName: "", lastName: "", email: "" ,age:"" , gender:"" ,phone:"", role:""});
     } catch (err) {
-      console.error(
-        "Error adding user:",
-        err.response ? err.response.data : err.message,
-      );
+      console.error("Error adding user:", err.message);
       setError("Error adding user. Please try again.");
       setMessage("");
     }
@@ -113,6 +111,18 @@ const AddUserForm = () => {
             id="phone"
             name="phone"
             value={formData.phone}
+            onChange={handleChange}
+            required
+            className="border-none focus:outline-none"
+          />
+        </div>
+        <div className="mb-4 w-full border-2 p-2 rounded">
+          <label htmlFor="role" className="text-xl">Role:</label>
+          <input
+            type="text"
+            id="role"
+            name="role"
+            value={formData.role}
             onChange={handleChange}
             required
             className="border-none focus:outline-none"

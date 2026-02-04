@@ -41,19 +41,25 @@ function AllUser() {
   if (error) {
     return <div className="text-red-500">Error: {error.message}</div>;
   }
+
+  function shortFilter(str) {
+    if (str.length > 15) {
+      return str.substring(0, 15) + "...";
+    }
+    return str;
+  }
+
   
 
-//   const deleteUser = (userId) => {
-//     const data = users.filter(user => user.id !== userId);
-//     setUsers(data);  
-//     console.log("Deleted user with ID:", userId);
-//   };
+
 
   return (
     <div className="flex flex-col items-center justify-center py-4 px-5">
       <div>
         <h1 className="text-2xl font-bold mb-4 ">All Users Data</h1>
       </div>
+      
+      
 
       <div>
         <div className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden">

@@ -66,7 +66,7 @@ const SingleUser = () => {
                         <h2 className="text-lg font-medium">{user.phone}</h2>
                     </div>
                     <div className="bg-gray-100 p-2 rounded">
-                        <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" >Delete</button>
+                        <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onClick={() => { if (window.confirm('Are you sure you want to delete this user?')) { alert('User deleted'); navigate('/'); } }}>Delete</button>
                     </div>
                     <div className="bg-gray-100 p-2 rounded">
                         <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={() => navigate(`/update/${user.id}`)}>Edit</button>

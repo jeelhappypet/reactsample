@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
-const AddUserForm = () => {
+const AddUserForm = ({close}) => {
   const [formData, setFormData] = useState({
+    image: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -14,23 +13,25 @@ const AddUserForm = () => {
   });
   const [message, setMessage] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
-      const newUser = { id: Date.now(), ...formData };
+      const maxId = existingUsers.length > 0 ? Math.max(...existingUsers.map(u => u.id)) : 100;
+      const newUser = { id: maxId + 1, ...formData };
       existingUsers.push(newUser);
       localStorage.setItem('users', JSON.stringify(existingUsers));
       console.log("User added successfully:", newUser);
       setMessage("User added successfully!");
       setError(null);
-      setFormData({ firstName: "", lastName: "", email: "" ,age:"" , gender:"" ,phone:"", role:""});
+      setFormData({ image: "", firstName: "", lastName: "", email: "" ,age:"" , gender:"" ,phone:"", role:""});
+      close();
     } catch (err) {
       console.error("Error adding user:", err.message);
       setError("Error adding user. Please try again.");
@@ -39,9 +40,22 @@ const AddUserForm = () => {
   };
 
   return (
-    <div className="max-w-full mx-auto p-4 border border-gray-200 rounded-lg shadow-md">
+    <div className="overlay max-w-full mx-auto p-4 border border-gray-200 rounded-lg shadow-md flex flex-col">
       <h2 className="text-2xl font-bold mb-4">Add New User</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="modal">
+        <div className="mb-4 w-full border-2 p-2 rounded">
+          <label htmlFor="image" className="text-xl">Image URL:  </label>
+          <input
+            type="text"
+            id="image"
+            name="image"
+            value={formData.image}
+            onChange={handleChange}
+            placeholder="Enter image URL"
+            required
+            className="border-none focus:outline-dotted w-full"
+          />
+        </div>
         <div className="mb-4 w-full border-2 p-2 rounded">
           <label htmlFor="name" className="text-2xl">First Name:</label>
           <input
@@ -128,13 +142,12 @@ const AddUserForm = () => {
             className="border-none focus:outline-none"
           />
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add User</button>
-      </form>
-      {message && <p style={{ color: "green" }} className="text-2xl">{message}</p>}
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleSubmit}>Add User</button>
+        <button type="button" onClick={close} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2">Cancel</button>
+        {message && <p style={{ color: "green" }} className="text-2xl">{message}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <div className="absolute right-4 top-3">
-                        <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={() => navigate('/')}>Back</button>
-                    </div>
+      </form>
+
     </div>
   );
 };

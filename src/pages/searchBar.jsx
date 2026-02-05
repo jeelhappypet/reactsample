@@ -8,20 +8,36 @@ function SearchBar() {
     const [results, setResults] = useState([]);
     const navigate = useNavigate();
     const handleSearch = async () => {
-        try {
-            const response = await axios.get(`https://dummyjson.com/users/search?q=${searchTerm}`);
-            setResults(response.data.users);
-        } catch (error) {
-            console.error("Error in search results:", error);
+        const localUsers = JSON.parse(localStorage.getItem('users')) || [];
+        let apiUsers = [];
+        if (searchTerm) {
+            try {
+                const response = await axios.get(`https://dummyjson.com/users/search?q=${searchTerm}`);
+                // apiUsers = response.data.users;
+            } catch (error) {
+                console.error("Error in search results:", error);
+            }
+        }
+        const allUsers = [...localUsers, ...apiUsers];
+        const userMap = new Map();
+        allUsers.forEach(u => userMap.set(u.id, u));
+        const uniqueUsers = Array.from(userMap.values());
+        if (searchTerm) {
+            const filtered = uniqueUsers.filter(user => 
+                user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.email.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setResults(filtered);
+        } else {
+            setResults(uniqueUsers);
         }
     };
 
+    
+
     useEffect(() => {
-        if (searchTerm) {
-            handleSearch();
-        } else {
-            setResults([results]);  
-        }
+        handleSearch();
     }, [searchTerm]);
     return (
         <div className='w-full'>

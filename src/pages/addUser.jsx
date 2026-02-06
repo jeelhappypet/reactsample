@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AddUserForm = ({close}) => {
+const AddUserForm = ({close, refreshData}) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     image: "",
     firstName: "",
@@ -21,6 +23,11 @@ const AddUserForm = ({close}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.image || !formData.firstName || !formData.lastName || !formData.email || !formData.age || !formData.gender || !formData.phone || !formData.role) {
+      setError("Please fill in all required fields.");
+      setMessage("");
+      return;
+    }
     try {
       const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
       const maxId = existingUsers.length > 0 ? Math.max(...existingUsers.map(u => u.id)) : 100;
@@ -31,6 +38,7 @@ const AddUserForm = ({close}) => {
       setMessage("User added successfully!");
       setError(null);
       setFormData({ image: "", firstName: "", lastName: "", email: "" ,age:"" , gender:"" ,phone:"", role:""});
+      refreshData();
       close();
     } catch (err) {
       console.error("Error adding user:", err.message);
@@ -143,7 +151,7 @@ const AddUserForm = ({close}) => {
           />
         </div>
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleSubmit}>Add User</button>
-        <button type="button" onClick={close} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2">Cancel</button>
+        <button type="button" onClick={() => navigate("/")} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2">Cancel</button>
         {message && <p style={{ color: "green" }} className="text-2xl">{message}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       </form>

@@ -11,7 +11,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<AllUser />} />
-        <Route path="/users/:id" element={<SingleUser />} />
         <Route path="/users/search" element={<SearchBar />} />
         <Route path="/users/add" element={<AddUserForm />} />
         <Route path="/update/:id" element={<UpdateUserForm />} />

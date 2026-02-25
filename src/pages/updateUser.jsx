@@ -116,29 +116,50 @@ const closeModal = () => {
 
 
 
-  const handleBlur = (e) => {
-    if (e.target.name === "firstName" &&  !/^[A-Za-z]+$/.test(e.target.value) && e.target.value.length <= 2) {
-      setErrorName("First name must be at least 2 characters long.");
-      setMessage(null);
-    } else if (e.target.name === "lastName" && !/^[A-Za-z]+$/.test(e.target.value) && e.target.value.length <= 5) {
-      setErrorLastName("Last name must be at least 2 characters long.");
-      setMessage("");
-    } else if (e.target.name === "email" && !/^\S+@\S+\.\S+$/.test(e.target.value)) {
-      setErrorEmail("Invalid email format.");
-      setMessage("");
-    } else if (e.target.name === "age" && (e.target.value < 18 || e.target.value > 100)) {
-      setErrorAge("Age must be between 18 and 100.");
-      setMessage("");
-    } else if (e.target.name === "phone" && !/^\d{10}$/.test(e.target.value)) {
-      setErrorPhone("Phone number must be 10 digits.");
-      setMessage("");
+const handleBlur = (e) => {
+  const { name, value } = e.target;
+
+  if (name === "firstName") {
+    if (!/^[A-Za-z]+$/.test(value) || value.length < 2) {
+      setErrorName("First name must be at least 2 characters and only letters.");
     } else {
-      if (e.target.name === "firstName" || e.target.name === "lastName" || e.target.name === "email" || e.target.name === "age" || e.target.name === "phone") {
-        setError(null);
-        setMessage("");
-     } 
+      setErrorName(null);
     }
-  };
+  }
+
+  if (name === "lastName") {
+    if (!/^[A-Za-z]+$/.test(value) || value.length < 2) {
+      setErrorLastName("Last name must be at least 2 characters and only letters.");
+    } else {
+      setErrorLastName(null);
+    }
+  }
+
+  if (name === "email") {
+    if (!/^\S+@\S+\.\S+$/.test(value)) {
+      setErrorEmail("Invalid email format.");
+    } else {
+      setErrorEmail(null);
+    }
+  }
+
+  if (name === "age") {
+    if (value < 18 || value > 100) {
+      setErrorAge("Age must be between 18 and 100.");
+    } else {
+      setErrorAge(null);
+    }
+  }
+
+  if (name === "phone") {
+    if (!/^\d{10}$/.test(value)) {
+      setErrorPhone("Phone number must be 10 digits.");
+    } else {
+      setErrorPhone(null);
+    }
+  }
+};
+
 
 return (
   <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">

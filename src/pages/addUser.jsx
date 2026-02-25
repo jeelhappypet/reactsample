@@ -66,8 +66,8 @@ const handleBlur = (e) => {
   }
 
   if (name === "lastName") {
-    if (!/^[A-Za-z]+$/.test(value) || value.length < 2) {
-      setErrorLastName("Last name must be at least 2 characters and only letters.");
+    if (!/^[A-Za-z]+$/.test(value) || value.length < 4) {
+      setErrorLastName("Last name must be at least 4 characters and only letters.");
     } else {
       setErrorLastName(null);
     }

@@ -14,7 +14,14 @@ const AddUserForm = ({close, refreshData}) => {
     role: "",
   });
   const [message, setMessage] = useState("");
+  
   const [error, setError] = useState(null);
+  const [errorName, setErrorName] = useState(null);
+  const [errorLastName, setErrorLastName] = useState(null);
+  const [errorEmail, setErrorEmail] = useState(null);
+  const [errorAge, setErrorAge] = useState(null);
+  const [errorPhone, setErrorPhone] = useState(null);
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,117 +54,217 @@ const AddUserForm = ({close, refreshData}) => {
     }
   };
 
-  return (
-    <div className="overlay max-w-full mx-auto p-4 border border-gray-200 rounded-lg shadow-md flex flex-col">
-      <h2 className="text-2xl font-bold mb-4">Add New User</h2>
-      <form onSubmit={handleSubmit} className="modal">
-        <div className="mb-4 w-full border-2 p-2 rounded">
-          <label htmlFor="image" className="text-xl">Image URL:  </label>
+  const handleBlur = (e) => {
+    if (e.target.name === "firstName" &&  !/^[A-Za-z]+$/.test(e.target.value) && e.target.value.length <= 2) {
+      setErrorName("First name must be at least 2 characters long.");
+      setMessage("ok");
+    } else if (e.target.name === "lastName" && !/^[A-Za-z]+$/.test(e.target.value) && e.target.value.length <= 5) {
+      setErrorLastName("Last name must be at least 2 characters long.");
+      setMessage("");
+    } else if (e.target.name === "email" && !/^\S+@\S+\.\S+$/.test(e.target.value)) {
+      setErrorEmail("Invalid email format.");
+      setMessage("");
+    } else if (e.target.name === "age" && (e.target.value < 18 || e.target.value > 100)) {
+      setErrorAge("Age must be between 18 and 100.");
+      setMessage("");
+    } else if (e.target.name === "phone" && !/^\d{10}$/.test(e.target.value)) {
+      setErrorPhone("Phone number must be 10 digits.");
+      setMessage("");
+    } else {
+      if (e.target.name === "firstName" || e.target.name === "lastName" || e.target.name === "email" || e.target.name === "age" || e.target.name === "phone") {
+        setError(null);
+        setMessage("");
+     } 
+    }
+  };
+
+
+
+
+return (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+    <div className="bg-white w-full max-w-3xl rounded-2xl shadow-2xl p-8 relative animate-fadeIn">
+
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+        Add New User
+      </h2>
+
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        {/* Image */}
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-600 mb-1">
+            Image URL
+          </label>
           <input
             type="text"
-            id="image"
             name="image"
             value={formData.image}
             onChange={handleChange}
             placeholder="Enter image URL"
             required
-            className="border-none focus:outline-dotted w-full"
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
           />
         </div>
-        <div className="mb-4 w-full border-2 p-2 rounded">
-          <label htmlFor="name" className="text-2xl">First Name:</label>
+
+        {/* First Name */}
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-600 mb-1">
+            First Name
+          </label>
           <input
             type="text"
-            id="name"
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
+            onBlur={handleBlur}
             required
-            className="border-none focus:outline-dotted"
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
           />
+          {errorName && (
+            <p className="text-red-500 text-sm mt-1">{errorName}</p>
+          )}
         </div>
-        <div className="mb-4 w-full border-2 p-2 rounded">
-          <label htmlFor="lastName" className="text-xl">Last Name:</label>
+
+        {/* Last Name */}
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-600 mb-1">
+            Last Name
+          </label>
           <input
             type="text"
-            id="lastName"
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
+            onBlur={handleBlur}
             required
-            className="border-none focus:outline-dotted"
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
           />
+          {errorLastName && (
+            <p className="text-red-500 text-sm mt-1">{errorLastName}</p>
+          )}
         </div>
-        <div className="mb-4 w-full border-2 p-2 rounded">
-          <label htmlFor="email" className="text-xl">Email:</label>
+
+        {/* Email */}
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-600 mb-1">
+            Email
+          </label>
           <input
             type="email"
-            id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
+            onBlur={handleBlur}
             required
-            className="border-none focus:outline-dotted"
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
           />
+          {errorEmail && (
+            <p className="text-red-500 text-sm mt-1">{errorEmail}</p>
+          )}
         </div>
-        <div className="mb-4 w-full border-2 p-2 rounded">
-          <label htmlFor="age" className="text-xl">Age:</label>
+
+        {/* Age */}
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-600 mb-1">
+            Age
+          </label>
           <input
             type="number"
             min="18"
             max="100"
-            id="age"
             name="age"
             value={formData.age}
             onChange={handleChange}
+            onBlur={handleBlur}
             required
-            className="border-none focus:outline-dotted"
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
           />
+          {errorAge && (
+            <p className="text-red-500 text-sm mt-1">{errorAge}</p>
+          )}
+          {message && !errorAge && (
+            <p className="text-green-500 text-sm mt-1">{message}</p>
+          )}
         </div>
-        <div className="mb-4 w-full border-2 p-2 rounded">
-          <label htmlFor="gender" className="text-xl">Gender:</label>
-          <input
-            type="text"
-            id="gender"
+
+        {/* Gender */}
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-600 mb-1">
+            Gender
+          </label>
+          <select
             name="gender"
             value={formData.gender}
             onChange={handleChange}
             required
-            className="border-none focus:outline-none "
-          />
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+          >
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
         </div>
-        <div className="mb-4 w-full border-2 p-2 rounded">
-          <label htmlFor="phone" className="text-xl">Phone:</label>
+
+        {/* Phone */}
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-600 mb-1">
+            Phone
+          </label>
           <input
-            type="telephone"
-            id="phone"
+            type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
+            onBlur={handleBlur}
             required
-            className="border-none focus:outline-none"
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
           />
+          {errorPhone && (
+            <p className="text-red-500 text-sm mt-1">{errorPhone}</p>
+          )}
         </div>
-        <div className="mb-4 w-full border-2 p-2 rounded">
-          <label htmlFor="role" className="text-xl">Role:</label>
-          <input
-            type="text"
-            id="role"
+
+        {/* Role */}
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-600 mb-1">
+            Role
+          </label>
+          <select
             name="role"
             value={formData.role}
             onChange={handleChange}
             required
-            className="border-none focus:outline-none"
-          />
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+          >
+            <option value="">Select Role</option>
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+          </select>
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleSubmit}>Add User</button>
-        <button type="button" onClick={() => navigate("/")} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2">Cancel</button>
-        {message && <p style={{ color: "green" }} className="text-2xl">{message}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+
+        {/* Buttons */}
+        <div className="md:col-span-2 flex justify-end gap-4 mt-4">
+          <button
+            type="button"
+            onClick={close}
+            className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-md"
+          >
+            Add User
+          </button>
+        </div>
+
       </form>
-
     </div>
-  );
-};
-
+  </div>
+);
+}
 export default AddUserForm;
+

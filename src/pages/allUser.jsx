@@ -114,202 +114,189 @@ function AllUser() {
   //     console.log("Deleted user with ID:", userId);
   //   };
 
-  return (
-    <div className="flex flex-col items-center justify-center py-4 px-5">
-      <h1 className="text-2xl font-bold mb-4">All Users</h1>
-      <div className="">
-        <div className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden">
-          <div className="grid grid-cols-8 gap-1 p-4 font-semibold bg-gray-100 border-b border-gray-200 place-items-center">
-            <div
-              onClick={() =>
-                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
-              }
-              className="cursor-pointer flex items-center justify-center"
-            >
-              ID
-              <span className="ml-2">{sortOrder === "asc" ? "↑" : "↓"}</span>
-            </div>
-            <div
-              onClick={() =>
-                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
-              }
-              className="cursor-pointer flex items-center justify-center"
-            >
-              {" "}
-              Profile Photo
-              <span className="ml-2">{sortOrder === "asc" ? "↑" : "↓"}</span>
-            </div>
-            <div
-              onClick={() =>
-                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
-              }
-              className="cursor-pointer flex items-center justify-center"
-            >
-              First Name
-              <span className="ml-2">{sortOrder === "asc" ? "↑" : "↓"}</span>
-            </div>
-            <div
-              onClick={() =>
-                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
-              }
-              className="cursor-pointer flex items-center justify-center"
-            >
-              {" "}
-              Last Name
-              <span className="ml-2">{sortOrder === "asc" ? "↑" : "↓"}</span>
-            </div>
-            <div
-              onClick={() =>
-                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
-              }
-              className="cursor-pointer flex items-center justify-center"
-            >
-              {" "}
-              Age
-              <span className="ml-2">{sortOrder === "asc" ? "↑" : "↓"}</span>
-            </div>
-            <div>Email</div>
-            <div>Role</div>
-            <div>Actions</div>
-          </div>
-          {data.users.map((user) => (
-            <div
-              key={user.id}
-              onClick={() => {
-                setSelectedUser(user);
-                setOpenProfile(true);
-              }}
-              className="grid grid-cols-8 gap-1 p-4 border-b border-gray-200 hover:bg-gray-50 place-items-center cursor-pointer"
-            >
-              <div>{user.id}</div>
-              <div>
-                <img
-                  src={user.image}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full"
-                />
-              </div>
-              <div>{user.firstName}</div>
-              <div>{user.lastName}</div>
-              <div>{user.age}</div>
-              <div className="truncate">{user.email}</div>
-              <div>{user.role}</div>
-              <div className=" p-2 rounded flex space-x-2">
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (
-                      window.confirm(
-                        "Are you sure you want to delete this user?",
-                      )
-                    ) {
-                      axios
-                        .delete(`https://dummyjson.com/users/${user.id}`)
-                        .then(() => {})
-                        .catch(() => {});
-                      const updatedUsers = fullData.filter(
-                        (u) => u.id !== user.id,
-                      );
-                      setFullData(updatedUsers);
-                      localStorage.setItem(
-                        "users",
-                        JSON.stringify(updatedUsers),
-                      );
-                    }
-                  }}
-                >
-                  Delete
-                </button>
+return (
+  <div className="min-h-screen bg-gray-100 p-6 relative">
 
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedUser(user);
-                    setUpdateUser(true);
-                  }}
-                >
-                  Edit
-                </button>
-              </div>
-            </div>
-          ))}
-          <div></div>
-        </div>
-        <div className="flex justify-center space-x-4 mt-4">
-          <button
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={page === 0}
-          >
-            Previous
-          </button>
-          <p>Page: {page + 1}</p>
-          <button
-            onClick={() => setPage((p) => Math.max(0, p + 1))}
-            disabled={(page + 1) * limit >= data.total}
-          >
-            Next
-          </button>
-        </div>
-      </div>
+    {/* Header Section */}
+    <div className="flex justify-between items-center mb-6">
+      <h1 className="text-3xl font-bold text-gray-800">User Management</h1>
 
-      <div className="absolute top-3 right-4">
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4"
-          onClick={() => {
-            setAddUser(true);
-            setSelectedUser(null);
-          }}
-        >
-          Add User
-        </button>
-      </div>
-      <div className="absolute top-3 left-4">
+      <div className="flex items-center gap-4">
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search users..."
-          className="border border-gray-300 rounded px-4 py-2 w-64 focus:outline-none"
+          className="px-4 py-2 w-64 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
-      </div>
 
-      {openProfile && (
-        <SingleUser
-          close={() => {
-            setOpenProfile(false);
+        <button
+          className="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+          onClick={() => {
+            setAddUser(true);
             setSelectedUser(null);
           }}
-          user={selectedUser}
-        />
-      )}
-
-      <div className="flex flex-col w-full">
-        {addUser && (
-          <AddUserForm
-            close={() => {
-              setAddUser(false);
-              setSelectedUser(null);
-            }}
-            refreshData={refreshData}
-          />
-        )}
-      </div>
-
-      <div className="flex flex-col w-full">
-        {updateUser && (
-          <UpdateUser
-            close={() => {
-              setUpdateUser(false);
-              setSelectedUser(null);
-            }}
-            user={selectedUser}
-            refreshData={refreshData}
-          />
-        )}
+        >
+          + Add User
+        </button>
       </div>
     </div>
-  );
+
+    {/* Table Card */}
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+
+      {/* Table Header */}
+      <div className="grid grid-cols-8 px-6 py-4 bg-gray-50 font-semibold text-gray-700 text-sm border-b">
+        <div
+          onClick={() =>
+            setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
+          }
+          className="cursor-pointer flex items-center gap-1"
+        >
+          ID {sortOrder === "asc" ? "↑" : "↓"}
+        </div>
+        <div>Photo</div>
+        <div>First Name</div>
+        <div>Last Name</div>
+        <div>Age</div>
+        <div>Email</div>
+        <div>Role</div>
+        <div className="text-center">Actions</div>
+      </div>
+
+      {/* Table Rows */}
+      {data.users.map((user) => (
+        <div
+          key={user.id}
+          onClick={() => {
+            setSelectedUser(user);
+            setOpenProfile(true);
+          }}
+          className="grid grid-cols-8 px-6 py-4 items-center text-sm border-b hover:bg-gray-50 transition cursor-pointer"
+        >
+          <div className="font-medium text-gray-700">{user.id}</div>
+
+          <div>
+            <img
+              src={user.image}
+              alt="Profile"
+              className="w-12 h-12 rounded-full object-cover border"
+            />
+          </div>
+
+          <div>{user.firstName}</div>
+          <div>{user.lastName}</div>
+          <div>{user.age}</div>
+
+          <div className="truncate max-w-[150px]">{user.email}</div>
+
+          <div>
+            <span className="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-600">
+              {user.role}
+            </span>
+          </div>
+
+          {/* Actions */}
+          <div
+            className="flex justify-center gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="px-3 py-1 bg-blue-500 text-white rounded-lg text-xs hover:bg-blue-600 transition"
+              onClick={() => {
+                setSelectedUser(user);
+                setUpdateUser(true);
+              }}
+            >
+              Edit
+            </button>
+
+            <button
+              className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs hover:bg-red-600 transition"
+              onClick={() => {
+                if (
+                  window.confirm(
+                    "Are you sure you want to delete this user?"
+                  )
+                ) {
+                  axios
+                    .delete(`https://dummyjson.com/users/${user.id}`)
+                    .then(() => {})
+                    .catch(() => {});
+
+                  const updatedUsers = fullData.filter(
+                    (u) => u.id !== user.id
+                  );
+                  setFullData(updatedUsers);
+                  localStorage.setItem(
+                    "users",
+                    JSON.stringify(updatedUsers)
+                  );
+                }
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* Pagination */}
+    <div className="flex justify-center items-center gap-6 mt-6">
+      <button
+        onClick={() => setPage((p) => Math.max(0, p - 1))}
+        disabled={page === 0}
+        className="px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50 hover:bg-gray-300 transition"
+      >
+        Previous
+      </button>
+
+      <span className="text-gray-700 font-medium">
+        Page {page + 1}
+      </span>
+
+      <button
+        onClick={() => setPage((p) => Math.max(0, p + 1))}
+        disabled={(page + 1) * limit >= data.total}
+        className="px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50 hover:bg-gray-300 transition"
+      >
+        Next
+      </button>
+    </div>
+
+    {/* Modals */}
+    {openProfile && (
+      <SingleUser
+        close={() => {
+          setOpenProfile(false);
+          setSelectedUser(null);
+        }}
+        user={selectedUser}
+      />
+    )}
+
+    {addUser && (
+      <AddUserForm
+        close={() => {
+          setAddUser(false);
+          setSelectedUser(null);
+        }}
+        refreshData={refreshData}
+      />
+    )}
+
+    {updateUser && (
+      <UpdateUser
+        close={() => {
+          setUpdateUser(false);
+          setSelectedUser(null);
+        }}
+        user={selectedUser}
+        refreshData={refreshData}
+      />
+    )}
+  </div>
+);
 }
 export default AllUser;
